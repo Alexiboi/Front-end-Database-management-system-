@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Leave Requests</title>
+    <link rel="stylesheet" href="styles_requests.css">
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="../manager_view/manager_directory.html">Home</a></li>
+            <li><a href="request_notifications.html">Pending Requests</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <h1>Pending Leave Requests</h1>
+        <div id="pendingRequestsContainer">
+            <p>Loading pending requests...</p>
+        </div>
+    </main>
+
+    <script>
+        // Fetch pending requests on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchPendingRequests();
+        });
+
+        // Function to fetch pending requests
+        function fetchPendingRequests() {
+            fetch('fetch_pending_requests.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displayPendingRequests(data.requests);
+                    } else {
+                        document.getElementById('pendingRequestsContainer').innerHTML = '<p>No pending requests found.</p>';
+                    }
+                })
+                .catch(error => console.error('Error fetching pending requests:', error));
+        }
+
+        // Function to display pending requests
+        function displayPendingRequests(requests) {
+            const container = document.getElementById('pendingRequestsContainer');
+            container.innerHTML = ''; // Clear container
+
+            requests.forEach(request => {
+                const requestDiv = document.createElement('div');
+                requestDiv.classList.add('request-card');
+                requestDiv.innerHTML = `
+                    <p><strong>Employee ID:</strong> ${request.Employee_id}</p>
+                    <p><strong>Leave Type:</strong> ${request.Leave_type}</p>
+                    <p><strong>Start Date:</strong> ${request.Start_date}</p>
+                    <p><strong>End Date:</strong> ${request.End_date}</p>
+                    <p><strong>Comments:</strong> ${request.Comments}</p>
+                    <button class="approve-btn" data-id="${request.Leave_id}">Approve</button>
+                    <button class="deny-btn" data-id="${request.Leave_id}">Deny</button>
+                `;
+                container.appendChild(requestDiv);
+            });
+
+            // Attach event listeners to buttons
+            document.querySelectorAll('.approve-btn').forEach(button => {
+                button.addEventListener('click', () => updateRequestStatus(button.dataset.id, 'Approved'));
+            });
+
+            document.querySelectorAll('.deny-btn').forEach(button => {
+                button.addEventListener('click', () => updateRequestStatus(button.dataset.id, 'Denied'));
+            });
+        }
+
+        // Function to update request status
+        function updateRequestStatus(leaveId, status) {
+            fetch('update_request_status.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ Leave_id: leaveId, Status: status })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(`Request ${status.toLowerCase()} successfully.`);
+                        fetchPendingRequests(); // Refresh pending requests
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => console.error('Error updating request status:', error));
+        }
+    </script>
+</body>
+</html>

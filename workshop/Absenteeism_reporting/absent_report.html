@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absenteeism Report</title>
+    <link rel="stylesheet" href="styles_reports.css">
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="../manager_view/manager_directory.html">Home</a></li>
+            <li><a href="absent_report.html">Absent Report</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h1>Absenteeism Report</h1>
+        <div id="employeeSearch">
+            <h2>Search Employee Absenteeism</h2>
+            <input type="text" id="employeeNameInput" placeholder="Enter Employee Name">
+            <button onclick="searchEmployee()">Search</button>
+        </div>
+
+        <div id="employeeReport">
+            <h3>Employee Report</h3>
+            <p id="employeeReportContent">No data available. Please search for an employee.</p>
+        </div>
+
+        <hr>
+
+        <div id="departmentInsights">
+            <h2>Average Absence Rate by Department</h2>
+            <div id="departmentReportContent">
+                <p>Loading department insights...</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Search employee absenteeism
+        function searchEmployee() {
+            const employeeName = document.getElementById('employeeNameInput').value.trim();
+            if (!employeeName) {
+                alert("Please enter an employee name.");
+                return;
+            }
+
+            fetch(`fetch_employee_absenteeism.php?name=${encodeURIComponent(employeeName)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displayEmployeeReport(data);
+                    } else {
+                        document.getElementById('employeeReportContent').innerText = data.error || 'No data found.';
+                    }
+                })
+                .catch(error => console.error('Error fetching employee data:', error));
+        }
+
+        // Display employee absenteeism report
+        function displayEmployeeReport(data) {
+            const report = `
+                <p><strong>Employee Name:</strong> ${data.name}</p>
+                <p><strong>Total Days Absent:</strong> ${data.total_days}</p>
+                <p><strong>Reasons for Absence:</strong></p>
+                <ul>${data.reasons.map(reason => `<li>${reason}</li>`).join('')}</ul>
+                <p><strong>Absences by Period:</strong></p>
+                <table>
+                    <tr>
+                        <th>Period</th>
+                        <th>Days Absent</th>
+                    </tr>
+                    ${data.periodic_absences.map(period => `
+                        <tr>
+                            <td>${period.period}</td>
+                            <td>${period.days}</td>
+                        </tr>
+                    `).join('')}
+                </table>
+            `;
+            document.getElementById('employeeReportContent').innerHTML = report;
+        }
+
+        // Fetch and display department insights on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('fetch_department_absenteeism.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displayDepartmentInsights(data.departments);
+                    } else {
+                        document.getElementById('departmentReportContent').innerText = 'Error fetching department insights.';
+                    }
+                })
+                .catch(error => console.error('Error fetching department data:', error));
+        });
+
+        // Display average absence rate by department
+        function displayDepartmentInsights(departments) {
+            const report = `
+                <table>
+                    <tr>
+                        <th>Department</th>
+                        <th>Average Absence Rate</th>
+                    </tr>
+                    ${departments.map(department => `
+                        <tr>
+                            <td>${department.name}</td>
+                            <td>${department.average_rate}%</td>
+                        </tr>
+                    `).join('')}
+                </table>
+            `;
+            document.getElementById('departmentReportContent').innerHTML = report;
+        }
+    </script>
+</body>
+</html>

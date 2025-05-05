@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles_managers.css">
+        <title>Manager view of employee Directory</title>
+       
+    </head>
+    <body>
+        <nav class="navbar">
+            <ul>
+                <li><a href="manager_directory.html">Home</a></li>
+                <li><a href="../employee_record_files/employee_records.html">Employee Records</a></li>
+                <li><a href="../manager_requests_view/request_notifications.html">Pending requests</a></li>
+                <li><a href="../Absenteeism_reporting/absent_report.html">Absenteeism report</a></li>
+                <li><a href="../Payroll_reporting/financial_report.html">Financial Report</a></li>
+            </ul>
+        </nav>
+        <h1 style="text-align: center; margin-top: 20px;">Employee Directory</h1>
+
+        <!-- Search and Filter Section -->
+        <div class="controls" style="text-align: center; margin-bottom: 20px;">
+            <input type="text" id="searchInput" placeholder="Search by name, job title, etc.">
+            <select id="departmentFilter">
+                <option value="">All Departments</option>
+                <option value="Engineering">Engineering</option>
+                <option value="Operations">Operations</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Finance">Finance</option>
+            </select>
+        </div>
+
+        <!-- employee container card section -->
+
+        <div class="container" id="employeeCards"></div>
+
+        <!-- Add New Employee Section -->
+        <h2 style="text-align: center; margin-top: 40px;">Add New Employee</h2>
+        <form id="addEmployeeForm" style="text-align: center; margin-bottom: 40px;">
+            <input type="text" id="newName" placeholder="Name" required>
+            <input type="text" id="newPosition" placeholder="Position" required>
+            <input type="number" id="newSalary" placeholder="Salary" required>
+            <input type="date" id="newDob" placeholder="Date of Birth" required>
+            <input type="text" id="newAddress" placeholder="Home Address">
+            <input type="date" id="newHiredDate" placeholder="Hired Date" required>
+            <input type="url" id="newPhotoUrl" placeholder="Photo URL (optional)">
+            <input type="email" id="newEmail" placeholder="Email" required>
+            <input type="text" id="newContract" placeholder="Contract Type (e.g., Full-time)">
+            <input type="text" id="newNin" placeholder="National Insurance Number (optional)">
+            <input type="text" id="newDepartment" placeholder="Department" required>
+            <input type="text" id="newPhone" placeholder="Phone Number" required>
+            <button type="submit">Add Employee</button>
+        </form>
+
+        <!-- Remove employee section -->
+        <h2 style="text-align: center;">Remove Employee</h2>
+        <form id="removeEmployeeForm" style="text-align: center; margin-bottom: 40px;">
+            <input type="text" id="removeEmployeeId" placeholder="Employee ID" required>
+            <button type="submit">Remove Employee</button>
+        </form>
+
+        <!-- Promote Employee Section -->
+        <h2 style="text-align: center;">Promote Employee</h2>
+        <form id="promoteEmployeeForm" style="text-align: center; margin-bottom: 40px;">
+            <input type="text" id="promoteId" placeholder="Employee ID" required>
+            <input type="text" id="newPositionPromote" placeholder="New Position" required>
+            <button type="submit">Promote</button>
+        </form>
+
+        <h2 style="text-align: center; margin-top: 40px;">Employees with Birthdays This Month</h2>
+        <button id="birthdayButton" style="text-align: center; margin-bottom: 20px;">Show Employees with Birthdays</button>
+
+      
+
+        <!-- Detailed view part -->
+        <div id="employeeModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2 id="modalName"></h2>
+                <p id="modalDetails"></p>
+            </div>
+        </div>
+    
+        <script src="managers.js"></script>
+
+    </body>
+</html>

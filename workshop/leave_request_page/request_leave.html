@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles_requests.css">
+        <title>Leave request form</title>
+       
+    </head>
+    <body>
+        <nav class="navbar">
+            <ul>
+                <li><a href="../employee_view/employee_directory.html">Home</a></li>
+                <li><a href="request_leave.html" class="btn-request-leave">Request Leave</a></li> <!-- New Button -->
+            </ul>
+        </nav>
+        <form id="leaveRequestForm">
+            <label for="EmployeeName">Employee Name:</label>
+            <input type="text" id="EmployeeName" placeholder="Enter your name" required>
+        
+            <label for="LeaveType">Leave Type:</label>
+            <select id="LeaveType" required>
+                <option value="Sick">Sick</option>
+                <option value="Vacation">Vacation</option>
+                <option value="Personal">Personal</option>
+            </select>
+        
+            <label for="StartDate">Start Date:</label>
+            <input type="date" id="StartDate" required>
+        
+            <label for="EndDate">End Date:</label>
+            <input type="date" id="EndDate" required>
+        
+            <label for="Comments">Comments:</label>
+            <textarea id="Comments"></textarea>
+        
+            <button type="submit">Submit Request</button>
+        </form>
+        
+
+        <script>
+            document.getElementById('leaveRequestForm').addEventListener('submit', event => {
+                event.preventDefault();
+
+                const requestData = {
+                    Employee_name: document.getElementById('EmployeeName').value, // Send the employee name
+                    Leave_type: document.getElementById('LeaveType').value,
+                    Start_date: document.getElementById('StartDate').value,
+                    End_date: document.getElementById('EndDate').value,
+                    Comments: document.getElementById('Comments').value
+                };
+
+                fetch('leave_requests.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestData)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Leave request submitted successfully!');
+                        } else {
+                            alert('Error: ' + data.error);
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+
+            function displayPendingRequests(requests) {
+                const container = document.getElementById('pendingRequestsContainer');
+                container.innerHTML = ''; // Clear container
+
+                requests.forEach(request => {
+                    const requestDiv = document.createElement('div');
+                    requestDiv.classList.add('request-card');
+                    requestDiv.innerHTML = `
+                        <p><strong>Employee Name:</strong> ${request.Employee_name}</p>
+                        <p><strong>Employee ID:</strong> ${request.Employee_id}</p>
+                        <p><strong>Leave Type:</strong> ${request.Leave_type}</p>
+                        <p><strong>Start Date:</strong> ${request.Start_date}</p>
+                        <p><strong>End Date:</strong> ${request.End_date}</p>
+                        <p><strong>Comments:</strong> ${request.Comments}</p>
+                        <button class="approve-btn" data-id="${request.Request_id}">Approve</button>
+                        <button class="deny-btn" data-id="${request.Request_id}">Deny</button>
+                    `;
+                    container.appendChild(requestDiv);
+                });
+
+                // Attach event listeners to buttons
+                document.querySelectorAll('.approve-btn').forEach(button => {
+                    button.addEventListener('click', () => updateRequestStatus(button.dataset.id, 'Approved'));
+                });
+
+                document.querySelectorAll('.deny-btn').forEach(button => {
+                    button.addEventListener('click', () => updateRequestStatus(button.dataset.id, 'Denied'));
+                });
+            }
+
+        </script>
+    </body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Report</title>
+    <link rel="stylesheet" href="financial_report.css">
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="../manager_view/manager_directory.html">Home</a></li>
+            <li><a href="../employee_record_files/employee_records.html">Employee Records</a></li>
+            <li><a href="../manager_requests_view/request_notifications.html">Pending requests</a></li>
+            <li><a href="../Absenteeism_reporting/absent_report.html">Absenteeism report</a></li>
+            <li><a href="financial_report.html" class="active">Financial Report</a></li>
+        </ul>
+    </nav>
+    <main>
+        <div>
+            <button id="exportCsvButton">Export to CSV</button>
+            <button id="exportPdfButton">Export to PDF</button>
+        </div>        
+        <h1>Financial Report</h1>
+        <form id="filterForm">
+            <label for="department">Filter by Department:</label>
+            <input type="text" id="department" name="department" placeholder="Enter department name">
+
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate" name="startDate">
+
+            <label for="endDate">End Date:</label>
+            <input type="date" id="endDate" name="endDate">
+
+            <label for="position">Filter by Position:</label>
+            <input type="text" id="position" name="position" placeholder="e.g., Web Developer" />
+
+            <label for="minSalary">Salary Range (Min):</label>
+            <input type="number" id="minSalary" name="minSalary" placeholder="e.g., 50000" />
+
+            <label for="maxSalary">Salary Range (Max):</label>
+            <input type="number" id="maxSalary" name="maxSalary" placeholder="e.g., 100000" />
+
+            <button type="submit">Generate Report</button>
+        </form>
+        <div id="reportContainer">
+            <div class="report-grid">
+                <!-- Employee Details Table -->
+                <div class="table-header employee-header">Employee Details</div>
+                <table class="employee-table">
+                    <thead>
+                        <tr>
+                            <th>Employee ID</th>
+                            <th>Name</th>
+                            <th>Position</th>
+                            <th>Department</th>
+                            <th>Base Salary</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeeTableBody">
+                        <tr>
+                            <td colspan="5">No data available</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Add-ons Table -->
+                <div class="table-header addons-header">Add-ons</div>
+                <table class="addons-table">
+                    <thead>
+                        <tr>
+                            <th>Bonuses</th>
+                            <th>Incentives</th>
+                            <th>Allowances</th>
+                        </tr>
+                    </thead>
+                    <tbody id="addonsTableBody">
+                        <tr>
+                            <td colspan="3">No data available</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Deductions Table -->
+                <div class="table-header deductions-header">Deductions</div>
+                <table class="deductions-table">
+                    <thead>
+                        <tr>
+                            <th>Tax Deductions</th>
+                            <th>Insurance Deductions</th>
+                            <th>Retirement Contributions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="deductionsTableBody">
+                        <tr>
+                            <td colspan="3">No data available</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Net Pay Table -->
+                <div class="table-header netpay-header">Net Pay</div>
+                <table class="netpay-table">
+                    <thead>
+                        <tr>
+                            <th>Net Pay</th>
+                        </tr>
+                    </thead>
+                    <tbody id="netPayTableBody">
+                        <tr>
+                            <td>No data available</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    <script src="financial_report.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+</body>
+</html>
